@@ -1,0 +1,313 @@
+---
+title: Conceptos Clave
+description: Entendiendo Suspense, queries y cache
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+# Conceptos Clave
+
+## 1. Componente async = Promesa
+
+El concepto más importante para entender:
+
+```tsx
+// Este componente async RETORNA una promesa
+async function ProductStock({ productId }) {
+  const stock = await db.getStock(productId)
+  return <div>{stock}</div>
+}
+
+// Por eso el Suspense va en el PADRE:
+function Parent() {
+  return (
+    <Suspense fallback="Loading...">
+      <ProductStock />  {/* ← Esta línea CREA y EJECUTA la promesa */}
+    </Suspense>
+  )
+}
+```
+
+Cuando React renderiza `<ProductStock />`, está invocando una función async, lo cual crea una promesa. El Suspense en el padre **captura** esa promesa.
+
+<Callout type="error">
+**Error común:** Intentar poner Suspense DENTRO del componente async
+</Callout>
+
+### ❌ Incorrecto
+
+```tsx
+async function ProductStock() {
+  return (
+    <Suspense>  {/* Ya pasó el await, no sirve */}
+      <div>{await db.query(...)}</div>
+    </Suspense>
+  )
+}
+```
+
+**Por qué no funciona:** 
+- El `await` se ejecuta ANTES del `return`
+- Cuando llegas al `return`, la promesa ya se resolvió
+- El Suspense no tiene nada que capturar
+
+### ✅ Correcto
+
+```tsx
+function Parent() {
+  return (
+    <Suspense fallback="Loading...">
+      <ProductStock />  {/* Suspense captura la ejecución del componente */}
+    </Suspense>
+  )
+}
+
+async function ProductStock() {
+  const stock = await db.query(...)
+  return <div>{stock}</div>
+}
+```
+
+## 2. Múltiples queries vs Cache
+
+### La pregunta común
+
+> "¿No es ineficiente hacer 3 queries separadas por el mismo producto?"
+
+**Respuesta:** Depende de cuándo se ejecutan.
+
+<Tabs items={['Sin Cache Components', 'Con Cache Components']}>
+  <Tab value="Sin Cache Components">
+    ### Modelo tradicional
+    
+    ```tsx
+    // Una query en cada request
+    async function ProductPage({ productId }) {
+      const product = await db.query('SELECT * FROM products')
+      
+      return (
+        <div>
+          <h1>{product.name}</h1>
+          <p>${product.price}</p>
+          <p>Stock: {product.stock}</p>
+        </div>
+      )
+    }
+    ```
+    
+    **Timeline:**
+    - Request 1: Query completa
+    - Request 2: Query completa
+    - Request 3: Query completa
+    
+    **Total:** 3 queries a la DB
+  </Tab>
+  
+  <Tab value="Con Cache Components">
+    ### Modelo granular
+    
+    ```tsx
+    // 3 queries, pero solo 1 en request time
+    function ProductPage({ productId }) {
+      return (
+        <>
+          <ProductText productId={productId} />     {/* Build time */}
+          <ProductPrice productId={productId} />    {/* Build time */}
+          <Suspense>
+            <ProductStock productId={productId} />  {/* Request time */}
+          </Suspense>
+        </>
+      )
+    }
+    ```
+    
+    **Timeline:**
+    - Build: 2 queries (texto + precio)
+    - Request 1: 1 query (stock)
+    - Request 2: 1 query (stock)
+    - Request 3: 1 query (stock)
+    
+    **Total:** 2 queries en build + 3 queries en request = 5 queries
+    
+    Pero cada request solo ejecuta 1 query, y el HTML viene pre-generado.
+  </Tab>
+</Tabs>
+
+### Trade-off consciente
+
+| Aspecto | Query única | Queries separadas |
+|---------|-------------|-------------------|
+| Queries totales | 3 (1 por request) | 5 (2 en build + 3 en request) |
+| Queries por request | 1 query completa | 1 query pequeña (stock) |
+| Control granular | ❌ Todo o nada | ✅ Por campo |
+| Performance percibida | Depende del cache total | HTML instantáneo + streaming |
+| Complejidad | Baja | Media |
+
+**Conclusión:** Más queries totales, pero mejor experiencia de usuario y control fino.
+
+## 3. Tags para revalidación
+
+Los tags permiten invalidar cache de forma **selectiva** y **precisa**.
+
+### Sin tags (tradicional)
+
+```tsx
+// Invalidar toda la página
+revalidatePath('/product/1')
+
+// Invalida TODO el producto:
+// - Texto (que rara vez cambia)
+// - Precio (el único que cambió)
+// - Stock (que ya no tiene cache)
+```
+
+### Con tags (granular)
+
+```tsx
+// Cachear con tags únicos
+async function ProductPrice({ productId }) {
+  'use cache'
+  cacheTag('product-price', productId)  // → 'product-price-1'
+  // ...
+}
+
+// Invalidar solo el precio
+revalidateTag('product-price-1', 'max')
+
+// El texto mantiene su cache ✅
+// El stock ya no tiene cache ✅
+```
+
+### Anatomía de un tag
+
+```tsx
+cacheTag('product-price', productId)
+         ↑               ↑
+         Namespace       ID específico
+         
+// Genera: 'product-price-1'
+// Permite: revalidateTag('product-price-1')
+```
+
+**Ventaja:** Revalidación quirúrgica sin afectar otros campos.
+
+## 4. Runtime data requiere Suspense
+
+Runtime data es información que solo existe cuando llega una request:
+
+- `params` - Parámetros de la URL
+- `searchParams` - Query strings
+- `cookies()` - Cookies del usuario
+- `headers()` - Headers de la request
+
+### Por qué necesitan Suspense
+
+```tsx
+// ❌ Esto da error
+export default async function ProductPage({ params }) {
+  const { id } = await params  // Runtime data sin Suspense
+  return <div>{id}</div>
+}
+
+// Error: Runtime data was accessed outside of <Suspense>
+```
+
+**Razón:** Durante prerendering (build time), `params` no existe. Next.js requiere que marques explícitamente que este contenido necesita request context.
+
+### Solución
+
+```tsx
+// ✅ Correcto
+export default function ProductPage({ params }) {
+  return (
+    <Suspense fallback={<Skeleton />}>
+      <ProductContent params={params} />  {/* params pasa como prop */}
+    </Suspense>
+  )
+}
+
+async function ProductContent({ params }) {
+  const { id } = await params  {/* Ahora SÍ está en Suspense */}
+  return <div>{id}</div>
+}
+```
+
+<Callout type="info">
+El patrón es: componente sync pasa runtime data como prop a componente async dentro de Suspense.
+</Callout>
+
+## 5. Static shell vs Streaming
+
+### Static shell
+
+Contenido que se prerrenderiza y se incluye en el HTML inicial:
+
+```tsx
+// Estos componentes con 'use cache' generan static shell
+<ProductText productId={id} />   // → HTML incluido
+<ProductPrice productId={id} />  // → HTML incluido
+```
+
+**Ventaja:** El usuario ve contenido instantáneamente, sin esperar queries.
+
+### Streaming
+
+Contenido que se renderiza en request time y hace streaming al browser:
+
+```tsx
+// Este componente sin 'use cache' hace streaming
+<Suspense fallback={<Skeleton />}>
+  <ProductStock productId={id} />  // → Streaming después
+</Suspense>
+```
+
+**Ventaja:** Contenido siempre fresh, sin bloquear el HTML inicial.
+
+### Visualización
+
+```
+User Request → Server
+               ↓
+         [Prerendering check]
+               ↓
+    ┌──────────┴──────────┐
+    ↓                     ↓
+Static Shell          Streaming
+(instant)            (on-demand)
+    ↓                     ↓
+ Browser ←────────────────┘
+    ↓
+[Shows static + skeleton]
+    ↓
+[Streaming replaces skeleton]
+    ↓
+[Complete page rendered]
+```
+
+## 6. cacheLife profiles
+
+Perfiles predefinidos para diferentes tipos de contenido:
+
+```tsx
+cacheLife('seconds')  // Muy volátil (ej: stock market)
+cacheLife('minutes')  // Volátil (ej: trending topics)
+cacheLife('hours')    // Cambia ocasionalmente (ej: precios)
+cacheLife('days')     // Cambia raramente (ej: categorías)
+cacheLife('weeks')    // Muy estable (ej: términos legales)
+cacheLife('max')      // Casi nunca cambia (ej: contenido histórico)
+```
+
+O define tu propio perfil:
+
+```tsx
+cacheLife({
+  stale: 3600,      // 1 hora hasta considerarse stale
+  revalidate: 7200, // 2 horas hasta revalidar
+  expire: 86400,    // 1 día hasta expirar completamente
+})
+```
+
+<Callout type="success">
+**Regla práctica:** Usa el perfil más largo que sea aceptable para tu caso de uso. Más cache = mejor performance.
+</Callout>

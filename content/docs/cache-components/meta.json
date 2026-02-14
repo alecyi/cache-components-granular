@@ -1,0 +1,9 @@
+{
+  "title": "Cache Components",
+  "pages": [
+    "index",
+    "implementation",
+    "concepts",
+    "revalidation"
+  ]
+}

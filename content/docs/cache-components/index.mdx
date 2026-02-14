@@ -1,0 +1,133 @@
+---
+title: Cache Components
+description: Cacheo granular por campo en Next.js 16
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+# Cache Components - Cacheo Granular
+
+<Callout type="info">
+Demo interactivo de cómo cachear **campos individuales** de un registro con diferentes estrategias en Next.js 16.
+</Callout>
+
+## El Problema
+
+Imagina que tienes un **producto** con 3 campos:
+
+- **Texto** (nombre + descripción): Rara vez cambia
+- **Precio**: Cambia ocasionalmente  
+- **Stock**: Debe estar siempre actualizado
+
+¿Cómo cacheas cada campo de forma independiente?
+
+## ❌ Lo que NO funciona
+
+```tsx
+// Intentar cachear selectivamente desde un solo objeto
+async function ProductPage({ productId }) {
+  // Una sola query trae todo
+  const product = await db.query('SELECT * FROM products WHERE id = ?')
+  
+  // ¿Cómo cacheo solo el precio?
+  // ¿Cómo NO cacheo el stock?
+  return <div>{product.name} - ${product.price} - Stock: {product.stock}</div>
+}
+```
+
+**No funciona porque:** Una vez que tienes el objeto completo, no puedes aplicar `use cache` selectivamente a campos individuales.
+
+## ✅ La Solución
+
+Cada campo es un **componente async separado** con su propia query y estrategia de cache.
+
+```tsx
+export default function ProductPage({ params }) {
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <ProductContent params={params} />
+    </Suspense>
+  )
+}
+
+async function ProductContent({ params }) {
+  const { id } = await params
+  
+  return (
+    <div>
+      {/* CAMPO 1: Texto cacheado */}
+      <ProductText productId={id} />
+      
+      {/* CAMPO 2: Precio cacheado */}
+      <ProductPrice productId={id} />
+      
+      {/* CAMPO 3: Stock sin cache */}
+      <Suspense fallback={<StockSkeleton />}>
+        <ProductStock productId={id} />
+      </Suspense>
+    </div>
+  )
+}
+```
+
+<Callout type="warning">
+**Importante:** El Suspense va en el **padre**, no dentro del componente async.
+</Callout>
+
+## Arquitectura
+
+```
+ProductPage (sync - estático)
+│
+└─ <Suspense>
+   └─ ProductContent (async - accede a params)
+      ├─ ProductText (async + 'use cache')
+      ├─ ProductPrice (async + 'use cache')
+      └─ <Suspense>
+         └─ ProductStock (async sin cache)
+```
+
+## Comparación Visual
+
+<Tabs items={['Build Time', 'Request Time']}>
+  <Tab value="Build Time">
+    En build time, Next.js prerrenderiza la página:
+    
+    - ✅ `ProductText` ejecuta query → incluido en static shell
+    - ✅ `ProductPrice` ejecuta query → incluido en static shell
+    - ❌ `ProductStock` NO se ejecuta (requiere request context)
+    
+    **Resultado:** HTML con texto y precio ya renderizados
+  </Tab>
+  
+  <Tab value="Request Time">
+    Cuando un usuario visita la página:
+    
+    1. ⚡ Browser recibe HTML instantáneamente (texto + precio)
+    2. ⚡ Browser muestra skeleton del stock
+    3. 🔄 Server ejecuta query de stock
+    4. ⚡ Stock hace streaming y reemplaza skeleton
+  </Tab>
+</Tabs>
+
+## Siguientes pasos
+
+<Cards>
+  <Card 
+    title="Implementación" 
+    href="/docs/cache-components/implementation"
+    description="Código completo paso a paso"
+  />
+  <Card 
+    title="Conceptos clave" 
+    href="/docs/cache-components/concepts"
+    description="Suspense, queries y cache"
+  />
+  <Card 
+    title="Revalidación" 
+    href="/docs/cache-components/revalidation"
+    description="updateTag vs revalidateTag"
+  />
+</Cards>
