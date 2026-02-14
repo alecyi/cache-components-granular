@@ -7,7 +7,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { db } from "@/lib/db";
 import { parseProductId } from "@/lib/validators/product";
 import { ProductPriceFromPromise } from "./product-price-from-promise";
 import { ProductStockFromPromise } from "./product-stock-from-promise";
@@ -17,6 +16,7 @@ import {
 	ProductStockFromPromiseSkeleton,
 	ProductTextFromPromiseSkeleton,
 } from "./promise-field-skeletons";
+import { getSharedProduct } from "./shared-product";
 
 export async function ProductContentSharedPromise({
 	params,
@@ -25,7 +25,7 @@ export async function ProductContentSharedPromise({
 }) {
 	const { id } = await params;
 	const safeProductId = parseProductId(id);
-	const productPromise = db.getProduct(safeProductId);
+	const productPromise = getSharedProduct(safeProductId);
 
 	return (
 		<div className="space-y-6">

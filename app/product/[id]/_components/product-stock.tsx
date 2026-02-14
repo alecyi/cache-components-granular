@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { CacheAge } from "@/components/ui/cache-age";
 import {
 	Card,
 	CardDescription,
@@ -38,6 +39,7 @@ export async function ProductStock({ productId }: { productId: string }) {
 						🔄 Sin cache (streaming)
 					</Badge>
 				</div>
+				<CacheAge cachedAt={lastChecked} label="Edad del dato" />
 			</CardHeader>
 		</Card>
 	);

@@ -1,18 +1,19 @@
 import { Badge } from "@/components/ui/badge";
+import { CacheAge } from "@/components/ui/cache-age";
 import {
 	Card,
 	CardDescription,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import type { ProductPayload } from "@/lib/db";
+import type { SharedProductPayload } from "./shared-product";
 
 export async function ProductPriceFromPromise({
 	productPromise,
 }: {
-	productPromise: Promise<ProductPayload>;
+	productPromise: Promise<SharedProductPayload>;
 }) {
-	const { price } = await productPromise;
+	const { price, cacheCreatedAt } = await productPromise;
 
 	return (
 		<Card className="border-blue-200 dark:border-blue-800">
@@ -31,6 +32,7 @@ export async function ProductPriceFromPromise({
 						🧩 Promise compartida
 					</Badge>
 				</div>
+				<CacheAge cachedAt={cacheCreatedAt} label="Tiempo en cache" />
 			</CardHeader>
 		</Card>
 	);

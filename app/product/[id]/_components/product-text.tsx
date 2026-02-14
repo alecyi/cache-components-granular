@@ -3,22 +3,26 @@
 
 import { cacheLife, cacheTag } from "next/cache";
 import { Badge } from "@/components/ui/badge";
+import { CacheAge } from "@/components/ui/cache-age";
 import {
 	Card,
 	CardDescription,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { getCacheCreatedAt } from "@/lib/cache-age-registry";
 import { db } from "@/lib/db";
 
 // ============================================
 export async function ProductText({ productId }: { productId: string }) {
 	"use cache";
-	cacheTag(`product-text-${productId}`);
+	const textCacheTag = `product-text-${productId}`;
+	cacheTag(textCacheTag);
 	cacheLife("weeks"); // Cache largo: rara vez cambia
 
 	// Query SOLO para texto
 	const { name, description } = await db.getProductText(productId);
+	const cachedAt = getCacheCreatedAt(textCacheTag);
 
 	return (
 		<Card className="border-green-200 dark:border-green-800">
@@ -33,6 +37,7 @@ export async function ProductText({ productId }: { productId: string }) {
 					</Badge>
 				</div>
 				<CardDescription className="text-base">{description}</CardDescription>
+				<CacheAge cachedAt={cachedAt} label="Tiempo en cache" />
 			</CardHeader>
 		</Card>
 	);

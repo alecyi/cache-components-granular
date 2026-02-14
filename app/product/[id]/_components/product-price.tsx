@@ -1,11 +1,13 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { Badge } from "@/components/ui/badge";
+import { CacheAge } from "@/components/ui/cache-age";
 import {
 	Card,
 	CardDescription,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { getCacheCreatedAt } from "@/lib/cache-age-registry";
 import { db } from "@/lib/db";
 
 // ============================================
@@ -13,11 +15,13 @@ import { db } from "@/lib/db";
 // ============================================
 export async function ProductPrice({ productId }: { productId: string }) {
 	"use cache";
-	cacheTag(`product-price-${productId}`);
+	const priceCacheTag = `product-price-${productId}`;
+	cacheTag(priceCacheTag);
 	cacheLife("hours"); // Cache medio: cambia ocasionalmente
 
 	// Query SOLO para precio
 	const { price } = await db.getProductPrice(productId);
+	const cachedAt = getCacheCreatedAt(priceCacheTag);
 
 	return (
 		<Card className="border-blue-200 dark:border-blue-800">
@@ -36,6 +40,7 @@ export async function ProductPrice({ productId }: { productId: string }) {
 						⏱️ Cacheado 1 hora
 					</Badge>
 				</div>
+				<CacheAge cachedAt={cachedAt} label="Tiempo en cache" />
 			</CardHeader>
 		</Card>
 	);
