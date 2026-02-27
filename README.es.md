@@ -197,7 +197,7 @@ Las contribuciones son bienvenidas! Por favor:
 
 MIT
 
-## 👤 Autor
+## 👤 Autor: IvanTsxx
 
 Creado para demostrar Cache Components en Next.js 16
 

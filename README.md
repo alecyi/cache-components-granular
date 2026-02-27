@@ -233,7 +233,7 @@ MIT
 
 ---
 
-## 👤 Author
+## 👤 Author: IvanTsxx
 
 Created to demonstrate Cache Components in Next.js 16.
 
